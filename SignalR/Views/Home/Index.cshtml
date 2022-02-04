@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div class="text-center">
+        <div id="rps-welcome">
+            <h1>Welcome</h1>
+            <p>Welcome ot Rock-Paper-Scissors</p>
+            <label for="name">Enter your name:</label><input type="text" name="name" /><button disabled class="btn btn-primary">Enter</button>
+        </div>
+
+        <div id="rps-waiting">
+            <p>Waiting for another player to connect ...</p>
+        </div>
+
+        <div id="rps-playing">
+            <p>You are playing against <span id="rps-other"></span>.</p>
+            <p>Click on selection:</p>
+            <button id="rps-rock">Rock</button>
+            <button id="rps-paper">Paper</button>
+            <button id="rps-scissors">Scissors</button>
+            <p id="rps-status"></p>
+            <p id="rps-sub-status"></p>
+            <p id="rps-scores"></p>
+        </div>
+
+        <div id="rps-error"></div>
+    </div>
+
+@section Scripts{
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/game.js"></script>
+}
