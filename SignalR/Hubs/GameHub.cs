@@ -5,7 +5,7 @@ namespace SignalR.Hubs
 {
     public class GameHub : Hub
     {
-        public static GameManager _manager = new();
+        private static readonly GameManager _manager = new();
 
         public async Task Register(string name)
         {
