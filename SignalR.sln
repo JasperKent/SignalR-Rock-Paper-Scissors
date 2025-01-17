@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR", "SignalR\SignalR.csproj", "{723C31AE-044E-436C-A212-1F03BFFBFE4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{723C31AE-044E-436C-A212-1F03BFFBFE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{723C31AE-044E-436C-A212-1F03BFFBFE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{723C31AE-044E-436C-A212-1F03BFFBFE4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

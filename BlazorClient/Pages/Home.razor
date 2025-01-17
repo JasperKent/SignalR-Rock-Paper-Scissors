@@ -1,0 +1,136 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+
+<PageTitle>Home</PageTitle>
+
+<div class="text-center">
+    @switch(_phase)
+    {
+        case Phase.Welcome:
+            <div id="rps-welcome">
+                <h1>Welcome</h1>
+                <p>Welcome ot Rock-Paper-Scissors</p>
+                <label for="player-name">Enter your name:</label>
+                <input type="text" name="player-name" @bind-value="_playerName" @bind-value:event="oninput" />
+                <button disabled="@string.IsNullOrWhiteSpace(_playerName)" class="btn btn-primary" @onclick="Register">Enter</button>
+            </div>
+            break;
+
+        case Phase.Waiting:
+            <div>
+                <p>Waiting for another player to connect ...</p>
+            </div>
+            break;
+
+        case Phase.Playing:
+            <div>
+                <p>You are playing against @_opponentName.</p>
+                <p>Click on selection:</p>
+                <button class='@(_selection == "Rock" ? "rps-highlight" : "")' @onclick='()=>ThrowHand("Rock")'>Rock</button>
+                <button class='@(_selection == "Paper" ? "rps-highlight" : "")' @onclick='()=>ThrowHand("Paper")'>Paper</button>
+                <button class='@(_selection == "Scissors" ? "rps-highlight" : "")' @onclick='()=>ThrowHand("Scissors")'>Scissors</button>
+                <p>@_message1</p>
+                <p>@_message2</p>
+                <p>@_scores</p>
+            </div>
+            break;
+
+    }
+
+</div>
+
+@code{
+    private enum Phase {Welcome, Waiting, Playing}
+
+    private Phase _phase = Phase.Welcome;
+
+    private string _playerName = "";
+    private string _opponentName = "";
+    private string _gameId = "";
+
+    private string _selection = "";
+
+    private string _message1 = "";
+    private string _message2 = "";
+    private string _scores = "";
+
+    private HubConnection? _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:7234/gameHub")
+            .Build();
+
+        _hubConnection.On("WaitingForPlayer", () =>
+        {
+            _phase = Phase.Waiting;
+
+            StateHasChanged();
+        });
+
+        _hubConnection.On("GameStarted", (string player1, string player2, string gameId) =>
+        {
+            _phase = Phase.Playing;
+            _gameId = gameId;
+
+            _opponentName = player1 == _playerName ? player2 : player1;
+
+            StateHasChanged();
+        });
+
+        _hubConnection.On("Pending", (string waitingFor) =>
+        {
+            _message1 = _playerName == waitingFor
+                      ? "Your opponent has chosen ..."
+                      : $"Waiting for {waitingFor}.";
+
+            _message2 = "";
+
+            StateHasChanged();
+        });
+
+        _hubConnection.On("Drawn", (string explanation, string scores) =>
+         {
+             _message1 = "Drawn.";
+             _message2 = $"({explanation})";
+             _scores = scores;
+
+             _selection = "";
+
+             StateHasChanged();
+         });
+
+
+        _hubConnection.On("Won", (string winner, string explanation, string scores) =>
+         {
+             _message1 = winner == _playerName ? "You won!" : $"{winner} won.";
+             _message2 = $"({explanation})";
+             _scores = scores;
+
+             _selection = "";
+
+             StateHasChanged();
+         });
+
+        await _hubConnection.StartAsync();
+    }
+
+    private async Task Register()
+    {
+        if (_hubConnection != null)
+            await _hubConnection.SendAsync("Register", _playerName);
+    }
+
+    private async Task ThrowHand(string selection)
+    {
+        if (_hubConnection != null)
+        {
+            _selection = selection;
+
+            await _hubConnection.SendAsync("Throw", _gameId, _playerName, selection);
+        }
+    }
+}
