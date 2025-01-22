@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR", "SignalR\SignalR.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClient\BlazorClient.csproj", "{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{87030DAC-8AB3-420C-B3C7-66177DE63BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCB6203F-DC98-40DE-97F1-D83FDD52ABCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

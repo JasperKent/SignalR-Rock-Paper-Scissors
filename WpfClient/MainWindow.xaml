@@ -1,0 +1,43 @@
+﻿<Window x:Class="WpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfClient"
+        mc:Ignorable="d"
+        Title="Rock Paper Scissors" Height="450" Width="800" Loaded="Window_Loaded">
+    <Window.DataContext >
+        <local:GameViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <local:PhaseConverter x:Key="PhaseConverter" />
+        <local:BackgroundColourConverter x:Key="BackgroundColourConverter" />
+    </Window.Resources>
+
+    <StackPanel>
+        <StackPanel Visibility="{Binding Phase, Converter={StaticResource PhaseConverter}, ConverterParameter=Welcome}" HorizontalAlignment="Center">
+            <Label Content="Welcome" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
+            <Label Content="Welcome to Rock-Paper-Scissors" HorizontalAlignment="Center" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Enter your name:" />
+                <TextBox Text="{Binding PlayerName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Width="180" Margin="5,0,5,0" />
+                <Button Command="{Binding RegisterCommand}" Padding="4,0,4,0" Content="Enter" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Visibility="{Binding Phase, Converter={StaticResource PhaseConverter}, ConverterParameter=Waiting}" HorizontalAlignment="Center">
+                <Label Content="Waiting for another player to connect ..." />
+        </StackPanel>
+        <StackPanel Visibility="{Binding Phase, Converter={StaticResource PhaseConverter}, ConverterParameter=Playing}" HorizontalAlignment="Center">
+            <Label Content="{Binding OpponentMessage}" HorizontalAlignment="Center" />
+            <Label HorizontalAlignment="Center" Content="Click on selection:" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Background="{Binding Selection, Converter={StaticResource BackgroundColourConverter}, ConverterParameter=Rock}" Command="{Binding ThrowCommand}" CommandParameter="Rock" Padding="4, 2, 4, 2" Margin="5,0,5,0" Content="Rock" />
+                <Button Background="{Binding Selection, Converter={StaticResource BackgroundColourConverter}, ConverterParameter=Paper}" Command="{Binding ThrowCommand}" CommandParameter="Paper" Padding="4, 2, 4, 2" Margin="5,0,5,0" Content="Paper" />
+                <Button Background="{Binding Selection, Converter={StaticResource BackgroundColourConverter}, ConverterParameter=Scissors}" Command="{Binding ThrowCommand}" CommandParameter="Scissors" Padding="4, 2, 4, 2" Margin="5,0,5,0" Content="Scissors" />
+            </StackPanel>
+            <Label Content="{Binding Message1}" HorizontalAlignment="Center" />
+            <Label Content="{Binding Message2}" HorizontalAlignment="Center" />
+            <Label Content="{Binding Scores}" HorizontalAlignment="Center" />
+        </StackPanel>
+    </StackPanel>
+</Window>
