@@ -1,12 +1,13 @@
-﻿
-namespace SignalR.GameLogic
+﻿using System.Collections.Generic;
+
+namespace FrameworkHub.GameLogic
 {
 
     public class GameManager
     {
-        private readonly Lock _locker = new();
-        private readonly Dictionary<string, GameGroup> _games = [];
-        private GameGroup? _waitingGroup;
+        private readonly object _locker = new object();
+        private readonly Dictionary<string, GameGroup> _games = new Dictionary<string, GameGroup>();
+        private GameGroup _waitingGroup;
 
         public GameGroup Register(string name)
         {
@@ -14,7 +15,9 @@ namespace SignalR.GameLogic
             { 
                 if (_waitingGroup == null)
                 {
-                    _waitingGroup = new();
+                    _waitingGroup = new GameGroup();
+
+
                     _games[_waitingGroup.Name] = _waitingGroup;
                 }
 

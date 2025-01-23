@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClient", "BlazorClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{87030DAC-8AB3-420C-B3C7-66177DE63BB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkHub", "FrameworkHub\FrameworkHub.csproj", "{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkWpfClient", "FrameworkWpfClient\FrameworkWpfClient.csproj", "{913CC733-81A0-42A4-BAFA-23296EB9575C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87030DAC-8AB3-420C-B3C7-66177DE63BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{913CC733-81A0-42A4-BAFA-23296EB9575C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{913CC733-81A0-42A4-BAFA-23296EB9575C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{913CC733-81A0-42A4-BAFA-23296EB9575C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{913CC733-81A0-42A4-BAFA-23296EB9575C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
