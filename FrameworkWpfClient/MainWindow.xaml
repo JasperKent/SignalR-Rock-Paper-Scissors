@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FrameworkWpfClient"
         mc:Ignorable="d"
-        Title="Rock Paper Scissors" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Rock Paper Scissors" Height="450" Width="800" Loaded="Window_Loaded" Closed="Window_Closed">
     <Window.DataContext >
         <local:GameViewModel />
     </Window.DataContext>

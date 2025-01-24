@@ -29,5 +29,10 @@ namespace FrameworkWpfClient
         {
             ((GameViewModel)DataContext).Connect();
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            ((GameViewModel)DataContext).Dispose();
+        }
     }
 }

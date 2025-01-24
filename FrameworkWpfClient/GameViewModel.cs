@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -7,12 +8,14 @@ namespace FrameworkWpfClient
 
     internal enum Phase { Welcome, Waiting, Playing }
 
-    internal class GameViewModel : INotifyPropertyChanged
+    internal class GameViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly HubConnection _hubConnection;
         private readonly IHubProxy _hubProxy;
+
+        private readonly WorkerServiceProxy _workerServiceProxy;
 
         private string _gameId = "";
         private string _opponentName = "";
@@ -31,9 +34,11 @@ namespace FrameworkWpfClient
 
         public GameViewModel()
         {
-            _hubConnection = new HubConnection("https://localhost:44322/");
-            //_hubConnection = new HubConnection("https://localhost:7234/");
+            //_hubConnection = new HubConnection("https://localhost:44322/");
+            _hubConnection = new HubConnection("https://localhost:7234/");
             _hubProxy = _hubConnection.CreateHubProxy("gameHub");
+
+            _workerServiceProxy = new WorkerServiceProxy();
 
             _hubProxy.On("WaitingForPlayer", () =>
             {
@@ -97,12 +102,15 @@ namespace FrameworkWpfClient
 
         public async void Connect()
         {
-            await _hubConnection.Start();
+            _workerServiceProxy.Start();
+
+           // await _hubConnection.Start();
         }
 
         private async void Register()
         {
-            await _hubProxy.Invoke("Register", PlayerName);
+            _workerServiceProxy.SendMessage(PlayerName);
+            //await _hubProxy.Invoke("Register", PlayerName);
         }
 
         private async void ThrowHand(string selection)
@@ -112,6 +120,11 @@ namespace FrameworkWpfClient
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selection)));
 
             await _hubProxy.Invoke("Throw", _gameId, PlayerName, selection);
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)_workerServiceProxy).Dispose();
         }
     }
 }
