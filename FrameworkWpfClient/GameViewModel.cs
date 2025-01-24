@@ -32,6 +32,7 @@ namespace FrameworkWpfClient
         public GameViewModel()
         {
             _hubConnection = new HubConnection("https://localhost:44322/");
+            //_hubConnection = new HubConnection("https://localhost:7234/");
             _hubProxy = _hubConnection.CreateHubProxy("gameHub");
 
             _hubProxy.On("WaitingForPlayer", () =>
