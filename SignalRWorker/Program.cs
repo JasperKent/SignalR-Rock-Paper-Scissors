@@ -1,7 +1,7 @@
 using SignalRWorker;
 using System.Diagnostics;
 
-Debugger.Launch();
+//Debugger.Launch();
 
 var inPipe = args[0];
 var outPipe = args[1];

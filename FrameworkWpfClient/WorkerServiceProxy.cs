@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,8 @@ namespace FrameworkWpfClient
 
         private StreamReader _streamIn;
         private StreamWriter _streamOut;
+
+        private readonly Dictionary<string, Action<object[]>> _subscriptions = new Dictionary<string, Action<object[]>>();
 
         public void Dispose()
         {
@@ -39,7 +42,7 @@ namespace FrameworkWpfClient
             _workerProcess.StartInfo.FileName = @"E:\MyData\Repos\SignalR-Rock-Paper-Scissors\SignalRWorker\bin\Debug\net9.0\SignalRWorker.exe";
 
             _workerProcess.StartInfo.UseShellExecute = false;
-            _workerProcess.StartInfo.CreateNoWindow = false;
+            _workerProcess.StartInfo.CreateNoWindow = true;
 
             _workerProcess.StartInfo.Arguments = $"{_pipeOut.GetClientHandleAsString()} {_pipeIn.GetClientHandleAsString()}";
 
@@ -59,7 +62,9 @@ namespace FrameworkWpfClient
                     {
                         var message = _streamIn.ReadLine();
 
-                        MessageBox.Show(message);
+                        var response = JsonSerializer.Deserialize<Response>(message);
+
+                        _subscriptions[response.Method](response.Args);
                     }
                 }
                 catch
@@ -68,9 +73,29 @@ namespace FrameworkWpfClient
             });
         }
 
-        internal void SendMessage(string message)
+        internal void On(string eventName, Action onData)
         {
-            _streamOut.WriteLine(message);
+            _subscriptions[eventName] = _ => onData();
+        }
+
+        internal void On<T1>(string eventName, Action<T1> onData)
+        {
+            _subscriptions[eventName] = args => onData((T1)args[0]);
+        }
+
+        internal void On<T1,T2>(string eventName, Action<T1,T2> onData)
+        {
+            _subscriptions[eventName] = args => onData((T1)args[0], (T2)args[1]);
+        }
+
+        internal void On<T1,T2,T3>(string eventName, Action<T1,T2,T3> onData)
+        {
+            _subscriptions[eventName] = args => onData((T1)args[0], (T2)args[1], (T3)args[2]);
+        }
+
+        internal void Invoke(string method, params string[] args)
+        {
+            _streamOut.WriteLine(JsonSerializer.Serialize(new {method, args}));
         }
     }
 }

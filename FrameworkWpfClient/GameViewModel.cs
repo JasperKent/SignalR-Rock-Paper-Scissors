@@ -12,9 +12,6 @@ namespace FrameworkWpfClient
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly HubConnection _hubConnection;
-        private readonly IHubProxy _hubProxy;
-
         private readonly WorkerServiceProxy _workerServiceProxy;
 
         private string _gameId = "";
@@ -34,20 +31,16 @@ namespace FrameworkWpfClient
 
         public GameViewModel()
         {
-            //_hubConnection = new HubConnection("https://localhost:44322/");
-            _hubConnection = new HubConnection("https://localhost:7234/");
-            _hubProxy = _hubConnection.CreateHubProxy("gameHub");
-
             _workerServiceProxy = new WorkerServiceProxy();
 
-            _hubProxy.On("WaitingForPlayer", () =>
+            _workerServiceProxy.On("WaitingForPlayer", () =>
             {
                 Phase = Phase.Waiting;
 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Phase)));
             });
 
-            _hubProxy.On("GameStarted", (string player1, string player2, string gameId) =>
+            _workerServiceProxy.On("GameStarted", (string player1, string player2, string gameId) =>
             {
                 Phase = Phase.Playing;
                 _gameId = gameId;
@@ -58,7 +51,7 @@ namespace FrameworkWpfClient
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OpponentMessage)));
             });
 
-            _hubProxy.On("Pending", (string waitingFor) =>
+            _workerServiceProxy.On("Pending", (string waitingFor) =>
             {
                 Message1 = PlayerName == waitingFor
                           ? "Your opponent has chosen ..."
@@ -70,7 +63,7 @@ namespace FrameworkWpfClient
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Message2)));
             });
 
-            _hubProxy.On("Drawn", (string explanation, string scores) =>
+            _workerServiceProxy.On("Drawn", (string explanation, string scores) =>
             {
                 Message1 = "Drawn.";
                 Message2 = $"({explanation})";
@@ -85,7 +78,7 @@ namespace FrameworkWpfClient
             });
 
 
-            _hubProxy.On("Won", (string winner, string explanation, string scores) =>
+            _workerServiceProxy.On("Won", (string winner, string explanation, string scores) =>
             {
                 Message1 = winner == PlayerName ? "You won!" : $"{winner} won.";
                 Message2 = $"({explanation})";
@@ -107,19 +100,18 @@ namespace FrameworkWpfClient
            // await _hubConnection.Start();
         }
 
-        private async void Register()
+        private void Register()
         {
-            _workerServiceProxy.SendMessage(PlayerName);
-            //await _hubProxy.Invoke("Register", PlayerName);
+            _workerServiceProxy.Invoke("Register", PlayerName);
         }
 
-        private async void ThrowHand(string selection)
+        private void ThrowHand(string selection)
         {
             Selection = selection;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selection)));
 
-            await _hubProxy.Invoke("Throw", _gameId, PlayerName, selection);
+             _workerServiceProxy.Invoke("Throw", _gameId, PlayerName, selection);
         }
 
         public void Dispose()
