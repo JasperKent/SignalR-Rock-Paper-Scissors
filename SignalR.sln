@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkHub", "FrameworkHub\FrameworkHub.csproj", "{FA886C1D-2DDD-4DC4-BBA8-DA57F758D564}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkWpfClient", "FrameworkWpfClient\FrameworkWpfClient.csproj", "{913CC733-81A0-42A4-BAFA-23296EB9575C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C23BEEF7-65B8-466B-AEBB-66454C038980} = {C23BEEF7-65B8-466B-AEBB-66454C038980}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRWorker", "SignalRWorker\SignalRWorker.csproj", "{C23BEEF7-65B8-466B-AEBB-66454C038980}"
 EndProject
