@@ -13,9 +13,7 @@ namespace FrameworkWpfClient
 {
     internal class WorkerServiceProxy : IDisposable
     {
-        private Process _workerProcess;
-        private AnonymousPipeServerStream _pipeOut;
-        private AnonymousPipeServerStream _pipeIn;
+        private NamedPipeClientStream _pipeStream;
 
         private StreamReader _streamIn;
         private StreamWriter _streamOut;
@@ -24,35 +22,19 @@ namespace FrameworkWpfClient
 
         public void Dispose()
         {
-            _workerProcess.Kill();
-            _workerProcess.Dispose();
             _streamIn.Dispose();
             _streamOut.Dispose();
-            _pipeOut.Dispose();
-            _pipeIn.Dispose();
+            _pipeStream.Dispose();
         }
 
         public void Start()
         {
-            _pipeOut = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
-            _pipeIn = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            _pipeStream = new NamedPipeClientStream(".", "RPSPipe", PipeDirection.InOut, PipeOptions.Asynchronous);
 
-            _workerProcess = new Process();
+            _pipeStream.Connect();
 
-            _workerProcess.StartInfo.FileName = @"E:\MyData\Repos\SignalR-Rock-Paper-Scissors\SignalRWorker\bin\Debug\net9.0\SignalRWorker.exe";
-
-            _workerProcess.StartInfo.UseShellExecute = false;
-            _workerProcess.StartInfo.CreateNoWindow = true;
-
-            _workerProcess.StartInfo.Arguments = $"{_pipeOut.GetClientHandleAsString()} {_pipeIn.GetClientHandleAsString()}";
-
-            _workerProcess.Start();
-
-            _pipeOut.DisposeLocalCopyOfClientHandle();
-            _pipeIn.DisposeLocalCopyOfClientHandle();
-
-            _streamIn = new StreamReader(_pipeIn);
-            _streamOut = new StreamWriter(_pipeOut) { AutoFlush = true };
+            _streamIn = new StreamReader(_pipeStream);
+            _streamOut = new StreamWriter(_pipeStream) { AutoFlush = true };
 
             Task.Run(() =>
             {

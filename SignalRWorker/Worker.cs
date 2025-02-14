@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.ComponentModel;
 using System.IO.Pipes;
 using System.Numerics;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text.Json;
 
 namespace SignalRWorker
@@ -10,25 +12,43 @@ namespace SignalRWorker
     {
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        private readonly AnonymousPipeClientStream _pipeOut;
-        private readonly AnonymousPipeClientStream _pipeIn;
+        private readonly NamedPipeServerStream _pipeStream;
 
-        private StreamReader _streamIn;
-        private StreamWriter _streamOut;
+        private StreamReader? _streamIn;
+        private StreamWriter? _streamOut;
 
         private readonly HubConnection _hubConnection;
 
-        public Worker(string inPipe, string outPipe)
+        public Worker() 
         {
-            _pipeOut = new AnonymousPipeClientStream(PipeDirection.Out, outPipe);
-            _pipeIn = new AnonymousPipeClientStream(PipeDirection.In, inPipe);
+            var sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
 
-            _streamOut = new StreamWriter(_pipeOut) { AutoFlush = true };
-            _streamIn = new StreamReader(_pipeIn);
+            var pipeSecurity = new PipeSecurity();
+
+            pipeSecurity.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.FullControl, AccessControlType.Allow));
+
+            _pipeStream = NamedPipeServerStreamAcl.Create("RPSPipe", PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
 
             _hubConnection = new HubConnectionBuilder()
-               .WithUrl("https://localhost:7234/gameHub")
+               .WithUrl("https://localhost:7234/gameHub", options =>
+               {
+                   options.HttpMessageHandlerFactory = message =>
+                   {
+                       if (message is HttpClientHandler clientHandler)
+                           clientHandler.ServerCertificateCustomValidationCallback += (_, _, _, _) => true;
+
+                       return message;
+                   };
+               })
                .Build();
+        }
+
+        private async Task Configure()
+        {
+            await _pipeStream.WaitForConnectionAsync();
+
+            _streamOut = new StreamWriter(_pipeStream) { AutoFlush = true };
+            _streamIn = new StreamReader(_pipeStream);
 
             _hubConnection.On("WaitingForPlayer", () =>
             {
@@ -70,15 +90,17 @@ namespace SignalRWorker
                     Args = new string[] { winner, explanation, scores }
                 }));
             });
+
+            await _hubConnection.StartAsync();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _hubConnection.StartAsync();
+            await Configure();
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var message = _streamIn.ReadLine();
+                var message = _streamIn?.ReadLine();
 
                 if (message == null)
                     continue;
@@ -96,10 +118,9 @@ namespace SignalRWorker
         {
             base.Dispose();
 
-            _pipeOut.Dispose();
-            _pipeIn.Dispose();
-            _streamOut.Dispose();
-            _streamIn.Dispose();
+            _streamOut?.Dispose();
+            _streamIn?.Dispose();
+            _pipeStream.Dispose();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.SignalR.Client;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -93,11 +92,9 @@ namespace FrameworkWpfClient
             });
         }
 
-        public async void Connect()
+        public void Connect()
         {
             _workerServiceProxy.Start();
-
-           // await _hubConnection.Start();
         }
 
         private void Register()

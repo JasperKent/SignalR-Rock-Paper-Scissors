@@ -1,13 +1,14 @@
 using SignalRWorker;
 using System.Diagnostics;
 
-//Debugger.Launch();
-
-var inPipe = args[0];
-var outPipe = args[1];
+Debugger.Launch();
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService(_ => new Worker(inPipe, outPipe));
+builder.Services.AddWindowsService(options =>
+{
+    options.ServiceName = "SignalRService";
+});
+builder.Services.AddHostedService<Worker>(); 
 
 var host = builder.Build();
 host.Run();
