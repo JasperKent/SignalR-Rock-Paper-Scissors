@@ -68,7 +68,7 @@
         {
             _phase = Phase.Waiting;
 
-            StateHasChanged();
+            InvokeAsync(StateHasChanged);
         });
 
         _hubConnection.On("GameStarted", (string player1, string player2, string gameId) =>
@@ -78,7 +78,7 @@
 
             _opponentName = player1 == _playerName ? player2 : player1;
 
-            StateHasChanged();
+            InvokeAsync(StateHasChanged);
         });
 
         _hubConnection.On("Pending", (string waitingFor) =>
@@ -89,7 +89,7 @@
 
             _message2 = "";
 
-            StateHasChanged();
+            InvokeAsync(StateHasChanged);
         });
 
         _hubConnection.On("Drawn", (string explanation, string scores) =>
@@ -100,7 +100,7 @@
 
              _selection = "";
 
-             StateHasChanged();
+             InvokeAsync(StateHasChanged);
          });
 
 
@@ -112,7 +112,7 @@
 
              _selection = "";
 
-             StateHasChanged();
+             InvokeAsync(StateHasChanged);
          });
 
         await _hubConnection.StartAsync();

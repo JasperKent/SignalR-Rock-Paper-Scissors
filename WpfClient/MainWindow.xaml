@@ -12,6 +12,13 @@
     <Window.Resources>
         <local:PhaseConverter x:Key="PhaseConverter" />
         <local:BackgroundColourConverter x:Key="BackgroundColourConverter" />
+        <Style x:Key="Rotate" TargetType="Button">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="45" />
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <StackPanel>
@@ -21,7 +28,10 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="Enter your name:" />
                 <TextBox Text="{Binding PlayerName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Width="180" Margin="5,0,5,0" />
-                <Button Command="{Binding RegisterCommand}" Padding="4,0,4,0" Content="Enter" />
+                <Button Command="{Binding RegisterCommand}" Padding="4,0,4,0" Content="Enter" RenderTransformOrigin="0.5,0.5"
+                        Style="{StaticResource Rotate}"
+                        />
+
             </StackPanel>
         </StackPanel>
         <StackPanel Visibility="{Binding Phase, Converter={StaticResource PhaseConverter}, ConverterParameter=Waiting}" HorizontalAlignment="Center">
